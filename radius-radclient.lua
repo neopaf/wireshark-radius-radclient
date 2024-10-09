@@ -2,12 +2,8 @@
 -- Copyright 2024
 --
 -- Adding the Lua script in Wireshark
--- 1) Open init.lua in the Wireshark installation directory for editing. You will need Admin privileges on Windows Vista and 7.
---
--- 2) Add the following lines to init.lua (at the very end):
---
--- 3) PAF_SCRIPT_PATH="C:\\opt\\"
--- 	dofile(PAF_SCRIPT_PATH.."tptf.lua")
+-- windows: %APPDATA%\Wireshark\plugins
+-- linux: ~/.local/lib/wireshark/plugins
 
 --	Debug in ZeroBrane Studio  http://studio.zerobrane.com/
 --debug = require("debug")
