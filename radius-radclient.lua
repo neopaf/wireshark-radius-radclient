@@ -33,11 +33,16 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 			if n == 'radius.code' then
 				code = i.value
 			else
-				if n:find('^radius.%u') then
-					n = n:gsub("^radius.", ""):gsub("_", "-")
-					if n ~= "CHAP-Ident" and n ~= "CHAP-String" and n ~= 'Event-Timestamp' then
+				if n == 'radius.authenticator' then
+					local subfield = field:add(field_desc)
+					subfield:set_text('"CHAP-Challenge=' .. tostring(i.value) .. "'" .. '",\\')
+				else
+					if n:find('^radius.%u') then
+						n = n:gsub("^radius.", ""):gsub("_", "-")
+						if n ~= "CHAP-Ident" and n ~= "CHAP-String" and n ~= 'Event-Timestamp' then
 						local subfield = field:add(field_desc)
-						subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
+							subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
+						end
 					end
 				end
 			end
