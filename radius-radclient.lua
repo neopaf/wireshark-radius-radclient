@@ -35,7 +35,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 			else
 				if n == 'radius.authenticator' then
 					local subfield = field:add(field_desc)
-					subfield:set_text('"CHAP-Challenge=' .. tostring(i.value) .. "'" .. '",\\')
+					subfield:set_text('CHAP-Challenge=' .. tostring(i.value) .. ',\\')
 				else
 					if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
