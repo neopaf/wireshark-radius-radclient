@@ -1,5 +1,5 @@
 -- Author : Alexander Petrossian paf@yandex.ru
--- Copyright 2024
+-- Copyright 2024,2025
 --
 -- Adding the Lua script in Wireshark
 -- windows: %APPDATA%\Wireshark\plugins
@@ -10,19 +10,17 @@
 --require("mobdebug").start()
 
 local radclient_proto = Proto("radclient","RADIUS Client")
-local field_desc = ProtoField.string("radclient.command")
-radclient_proto.fields = { field_desc }
+local field_command = ProtoField.string("radclient.command")
+local field_python = ProtoField.string("radclient.python")
+local field_detail = ProtoField.string("radius.detail")
+radclient_proto.fields = { field_command, field_detail, field_python}
 register_postdissector(radclient_proto)
 
-local avp = Field.new("radius.avp")
-
-local code2command = {
-	[1] = "auth",
-}
 
 function radclient_proto.dissector(tvb,pinfo,tree)
 	local root = tree:add(radclient_proto):set_generated()
-	local field = root:add(field_desc):set_text('echo \\')
+	local subfield_command = root:add(field_command):set_text('echo \\')
+	local python = root:add(field_python):set_text('Python')
 
 	local fields = { all_field_infos() }
 
@@ -34,23 +32,27 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 				code = i.value
 			else
 				if n == 'radius.authenticator' then
-					local subfield = field:add(field_desc)
+					local subfield = subfield_command:add(field_detail)
 					subfield:set_text('CHAP-Challenge=' .. tostring(i.value) .. ',\\')
+					local subfield_python = python:add(field_detail)
+					subfield_python:set_text('avp["CHAP-Challenge"]="' .. tostring(i.value) .. '"')
 				else
 					if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
 						if n ~= "CHAP-Ident" and n ~= "CHAP-String" and n ~= 'Event-Timestamp' then
-						local subfield = field:add(field_desc)
+							local subfield = subfield_command:add(field_detail)
 							subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
+							local subfield_python = python:add(field_detail)
+							subfield_python:set_text('avp["' .. n .. '"]="' .. tostring(i.value) .. "'")
 						end
 					end
 				end
 			end
 		end
 	end
-	local subfield = field:add(field_desc)
-	local command = code == 1 and 'auth' or 'acct'
-	subfield:set_text('| radclient -x $endpoint ' .. command .. ' $secret')
+	local subfield = subfield_command:add(field_detail)
+	local cmd = code == 1 and 'auth' or 'acct'
+	subfield:set_text('| radclient -x $endpoint ' .. cmd .. ' $secret')
 end
 
 
