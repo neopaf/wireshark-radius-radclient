@@ -8,6 +8,14 @@ Put [radius-radclient.lua](radius-radclient.lua) in Wireshark plugins folder
 
 ## use
 
+
+### radclient
 Copy radius message as rad client command like this:
 
-![screen.png](screen.png)
+![radclient.png](radclient.png)
+
+
+### python
+Copy radius message avp to test code:
+
+![python.png](python.png)
