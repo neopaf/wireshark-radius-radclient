@@ -20,7 +20,7 @@ register_postdissector(radclient_proto)
 function radclient_proto.dissector(tvb,pinfo,tree)
 	local root = tree:add(radclient_proto):set_generated()
 	local subfield_command = root:add(field_command):set_text('echo \\')
-	local python = root:add(field_python):set_text('# Python')
+	local python = root:add(field_python):set_text('# Python frame ' .. pinfo.number)
 
 	local fields = { all_field_infos() }
 
@@ -35,7 +35,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 					local subfield = subfield_command:add(field_detail)
 					subfield:set_text('CHAP-Challenge=' .. tostring(i.value) .. ',\\')
 					local subfield_python = python:add(field_detail)
-					subfield_python:set_text("req = srv.CreateAcctPacket(message_authenticator='" .. tostring(i.value) .. "')")
+					subfield_python:set_text("req = srv.CreateAcctPacket()") --TODO python ignores this :( authenticator=int('" .. tostring(i.value) .. "', 16).to_bytes(16, 'big'))")
 				else
 					--if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
