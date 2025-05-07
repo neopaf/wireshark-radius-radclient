@@ -35,7 +35,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 					local subfield = subfield_command:add(field_detail)
 					subfield:set_text('CHAP-Challenge=' .. tostring(i.value) .. ',\\')
 					local subfield_python = python:add(field_detail)
-					subfield_python:set_text("req = srv.CreateAcctPacket()") --TODO python ignores this :( authenticator=int('" .. tostring(i.value) .. "', 16).to_bytes(16, 'big'))")
+					subfield_python:set_text("req = srv.CreateAcctPacket(authenticator=int('" .. tostring(i.value) .. "', 16).to_bytes(16, 'big'))") -- TODO python ignores authenticator some reason
 				else
 					--if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
