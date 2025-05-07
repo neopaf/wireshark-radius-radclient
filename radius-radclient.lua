@@ -37,15 +37,28 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 					local subfield_python = python:add(field_detail)
 					subfield_python:set_text("avp['CHAP-Challenge']='" .. tostring(i.value) .. "'")
 				else
-					if n:find('^radius.%u') then
+					--if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
-						if n ~= "CHAP-Ident" and n ~= "CHAP-String" and n ~= 'Event-Timestamp' then
+						if n ~= "CHAP-Ident"
+								and n ~= "CHAP-String"
+								and n ~= 'Event-Timestamp'
+								and n ~= 'id'
+								and n ~= 'length'
+								and n ~= 'avp'
+								and n ~= 'avp.type'
+								and n ~= 'avp.length'
+								and n ~= 'req'
+								and n ~= 'rspframe'
+								and n ~= 'radius'
+								and not n:find('^avp.vendor')
+								and not n:find('^authenticator')
+						then
 							local subfield = subfield_command:add(field_detail)
 							subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
 							local subfield_python = python:add(field_detail)
 							subfield_python:set_text("avp['" .. n .. "']='" .. tostring(i.value) .. "'")
 						end
-					end
+					--end
 				end
 			end
 		end
