@@ -56,7 +56,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 							local subfield = subfield_command:add(field_detail)
 							subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
 							local subfield_python = python:add(field_detail)
-							subfield_python:set_text("avp['" .. n .. "']='" .. tostring(i.value) .. "'")
+							subfield_python:set_text("req['" .. n .. "']='" .. tostring(i.value) .. "'")
 						end
 					--end
 				end
