@@ -35,7 +35,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 					local subfield = subfield_command:add(field_detail)
 					subfield:set_text('CHAP-Challenge=' .. tostring(i.value) .. ',\\')
 					local subfield_python = python:add(field_detail)
-					subfield_python:set_text("avp['CHAP-Challenge']='" .. tostring(i.value) .. "'")
+					subfield_python:set_text("req = srv.CreateAcctPacket(message_authenticator='" .. tostring(i.value) .. "')")
 				else
 					--if n:find('^radius.%u') then
 						n = n:gsub("^radius.", ""):gsub("_", "-")
@@ -56,7 +56,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 							local subfield = subfield_command:add(field_detail)
 							subfield:set_text('"' .. n .. "='" .. tostring(i.value) .. "'" .. '",\\')
 							local subfield_python = python:add(field_detail)
-							subfield_python:set_text("req['" .. n .. "']='" .. tostring(i.value) .. "'")
+							subfield_python:set_text("req.AddAttribute('" .. n .. "', '" .. tostring(i.value) .. "')")
 						end
 					--end
 				end
