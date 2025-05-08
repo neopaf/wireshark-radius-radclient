@@ -6,8 +6,10 @@
 -- linux: ~/.local/lib/wireshark/plugins
 
 --	Debug in ZeroBrane Studio  http://studio.zerobrane.com/
---debug = require("debug")
---require("mobdebug").start()
+package.path = package.path .. ';//Users/paf/.luarocks/share/lua/5.4/?.lua'
+package.cpath = package.cpath .. ';/Users/paf/.luarocks/lib/lua/5.4/?.so'
+debug = require("debug")
+require("mobdebug").start()
 
 local radclient_proto = Proto("radclient","RADIUS Client")
 local field_command = ProtoField.string("radclient.command")
@@ -27,7 +29,7 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 	local code
 	for _, i in ipairs(fields) do
 		local n = i.name
-		if n:find('^radius') then
+		if n:find('^radius') and not i.generated then
 			if n == 'radius.code' then
 				code = i.value
 			else
@@ -48,7 +50,6 @@ function radclient_proto.dissector(tvb,pinfo,tree)
 								and n ~= 'avp.type'
 								and n ~= 'avp.length'
 								and n ~= 'req'
-								and n ~= 'rspframe'
 								and n ~= 'radius'
 								and not n:find('^avp.vendor')
 								and not n:find('^authenticator')
