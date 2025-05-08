@@ -5,11 +5,10 @@
 -- windows: %APPDATA%\Wireshark\plugins
 -- linux: ~/.local/lib/wireshark/plugins
 
---	Debug in ZeroBrane Studio  http://studio.zerobrane.com/
-package.path = package.path .. ';//Users/paf/.luarocks/share/lua/5.4/?.lua'
-package.cpath = package.cpath .. ';/Users/paf/.luarocks/lib/lua/5.4/?.so'
-debug = require("debug")
-require("mobdebug").start()
+--luarocks install mobdebug
+--package.path = package.path .. ';//Users/paf/.luarocks/share/lua/5.4/?.lua'
+--package.cpath = package.cpath .. ';/Users/paf/.luarocks/lib/lua/5.4/?.so'
+--require("mobdebug").start()
 
 local radclient_proto = Proto("radclient","RADIUS Client")
 local field_command = ProtoField.string("radclient.command")
